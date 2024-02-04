@@ -9,7 +9,7 @@ import * as domToImage from "dom-to-image";
 
 function App() {
   // 주사위 5개의 현재 상태를 나타내는 배열
-  const [dice, setDice] = useState([1, 1, 1, 1, 1]);
+  const [dice, setDice] = useState([0, 0, 0, 0, 0]);
   const defaultDark = window.matchMedia("(prefers-color-scheme: dark)");
   const localTheme =
     JSON.parse(localStorage.getItem("theme")) ||
@@ -18,7 +18,7 @@ function App() {
   // 라운드 수(`round`, `number`), 그 라운드에서 주사위를 굴린 횟수(`roll`, `number`) 그리고 초기화 여부(`reset`, `boolean`)를 담은 현재 진행 상황을 담은 객체
   const playStatus = useRef({
     round: 1,
-    roll: 1,
+    roll: 3,
     score: 0,
     reset: false,
     theme: "light",
@@ -38,7 +38,7 @@ function App() {
   // C. 초기화
   const toggleReset = () => {
     playStatus.current.round = 1;
-    playStatus.current.roll = 1;
+    playStatus.current.roll = 3;
     playStatus.current.score = 0;
     playStatus.current.reset = true;
     updateState({});
@@ -48,7 +48,7 @@ function App() {
   useEffect(() => {
     if (!isSubmitted) return;
     playStatus.current.round += 1;
-    playStatus.current.roll = 1;
+    playStatus.current.roll = 3;
     setIsSubmitted(false);
   }, [isSubmitted]);
 

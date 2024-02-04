@@ -7,6 +7,7 @@ import dice_3 from "../assets/dice_3.png";
 import dice_4 from "../assets/dice_4.png";
 import dice_5 from "../assets/dice_5.png";
 import dice_6 from "../assets/dice_6.png";
+import dice_q from "../assets/dice_q.png";
 import selected_light_dice_1 from "../assets/selected_light/dice_1.png";
 import selected_light_dice_2 from "../assets/selected_light/dice_2.png";
 import selected_light_dice_3 from "../assets/selected_light/dice_3.png";
@@ -20,7 +21,7 @@ import selected_dark_dice_4 from "../assets/selected_dark/dice_4.png";
 import selected_dark_dice_5 from "../assets/selected_dark/dice_5.png";
 import selected_dark_dice_6 from "../assets/selected_dark/dice_6.png";
 // 주사위 이미지
-const diceImages = ["", dice_1, dice_2, dice_3, dice_4, dice_5, dice_6];
+const diceImages = [dice_q, dice_1, dice_2, dice_3, dice_4, dice_5, dice_6];
 // 선택된 주사위 이미지
 const selectedLightDiceImages = [
   "",
@@ -53,12 +54,12 @@ const DiceGroup = (props, ref) => {
 
   // eslint-disable-next-line
   useEffect(() => {
-    setDice(dice.map(() => randomDice()));
+    setDice(dice.map(() => 0));
   }, []);
 
   // B. 주사위 굴리기
   const rollDice = () => {
-    if (ref.current.roll === 3) {
+    if (ref.current.roll === 0) {
       alert("You have used all your tries. Please select a score.");
       return;
     }
@@ -73,11 +74,13 @@ const DiceGroup = (props, ref) => {
         return randomDice();
       })
     );
-    ref.current.roll += 1;
+    ref.current.roll -= 1;
   };
 
   // C. 주사위 선택
   const toggleDice = (e) => {
+    if (ref.current.roll === 3)
+      return;
     const index = e.target.id;
     const tmpSelectedDice = [...selectedDice];
     tmpSelectedDice[index] = !tmpSelectedDice[index];
@@ -86,9 +89,12 @@ const DiceGroup = (props, ref) => {
 
   // D. `Roll` 버튼과 현재 진행 상황
   useEffect(() => {
-    if(ref.current.round > 12) return;
+    if (ref.current.round > 12) return;
     setSelectedDice([false, false, false, false, false]);
-    setDice(dice.map(() => randomDice()));
+    if (ref.current.roll === 3)
+      setDice(dice.map(() => 0));
+    else
+      setDice(dice.map(() => randomDice()));
     if (ref.current.reset) ref.current.reset = false;
   }, [ref.current.round, ref.current.reset]);
 
@@ -99,7 +105,7 @@ const DiceGroup = (props, ref) => {
         {/* A. 현재 진행 사항 표시 */}
         {ref.current.round <= 12 ? (
           <h3 className="status font-lg font-extrabold text-secondary">
-            Round: {ref.current.round} | Roll: {ref.current.roll}
+            Round: {ref.current.round} | Rolls Left: {ref.current.roll}
           </h3>
         ) : (
           <h3 className="status font-lg font-extrabold text-primary ">
